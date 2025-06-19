@@ -66,46 +66,39 @@ class HideAndSeekGame:
     def play_single_note(self, note_name: str, frequency: float) -> bool:
         """
         Play a single note and listen for the response.
+        Keep trying until the correct note is played.
         
         Args:
             note_name: Name of the note
             frequency: Frequency of the note
             
         Returns:
-            True if the correct note was played back
+            True when the correct note was played back
         """
-        print(f"\n🎵 Playing: {note_name}")
-        self.audio_player.play_note(frequency, duration=2.0, volume=0.3)
+        attempts = 0
         
-        # Listen for the response
-        success, detected_freq = self.audio_player.listen_for_note(
-            frequency, duration=3.0, tolerance_cents=self.tolerance_cents
-        )
-        
-        self.total_attempts += 1
-        
-        if success:
-            self.score += 1
-            print("✅ Perfect! You found the hidden note!")
-        else:
-            print("❌ Not quite right. Let me play it again...")
-            # Play the note again
+        while True:
+            attempts += 1
+            print(f"\n🎵 Playing: {note_name} (attempt {attempts})")
             self.audio_player.play_note(frequency, duration=2.0, volume=0.3)
             
-            # Give another chance
-            print("Try again:")
+            # Listen for the response
             success, detected_freq = self.audio_player.listen_for_note(
                 frequency, duration=3.0, tolerance_cents=self.tolerance_cents
             )
             
             self.total_attempts += 1
+            
             if success:
                 self.score += 1
-                print("✅ Great! You got it on the second try!")
+                if attempts == 1:
+                    print("✅ Perfect! You found the hidden note on the first try!")
+                else:
+                    print(f"✅ Great! You found the hidden note after {attempts} attempts!")
+                return True
             else:
-                print("❌ Let's move on to the next note...")
-        
-        return success
+                print("❌ Not quite right. Let me play it again...")
+                # The note will be played again in the next iteration of the loop
     
     def run_game(self, num_notes: int = 3) -> None:
         """

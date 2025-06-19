@@ -41,37 +41,29 @@ def get_note_frequency(note_name: str, octave: int = 4) -> float:
 
 def get_violin_range_notes() -> List[Tuple[str, float]]:
     """
-    Get all notes in violin range from open A to A on E string.
+    Get notes from A major scale between 440 Hz (A4) and 880 Hz (A5).
+    
+    A major scale: A, B, C#, D, E, F#, G#
     
     Returns:
         List of (note_name, frequency) tuples
     """
     notes = []
     
-    # Open A string (A4)
-    notes.append(('A4', 440.0))
+    # A major scale notes - only those 440 Hz and above
+    a_major_scale_notes = [
+        ('A4', 440.0),      # A4 - 440 Hz
+        ('B4', get_note_frequency('B', 4)),      # B4 - ~493.9 Hz
+        ('C#5', get_note_frequency('C#', 5)),    # C#5 - ~554.4 Hz
+        ('D5', get_note_frequency('D', 5)),      # D5 - ~587.3 Hz
+        ('E5', get_note_frequency('E', 5)),      # E5 - ~659.3 Hz
+        ('F#5', get_note_frequency('F#', 5)),    # F#5 - ~740.0 Hz
+        ('G#5', get_note_frequency('G#', 5)),    # G#5 - ~830.6 Hz
+        ('A5', get_note_frequency('A', 5)),      # A5 - 880 Hz
+    ]
     
-    # Notes on A string
-    notes.append(('A#4', get_note_frequency('A#', 4)))
-    notes.append(('B4', get_note_frequency('B', 4)))
-    
-    # Notes on D string
-    notes.append(('D4', 293.7))
-    notes.append(('D#4', get_note_frequency('D#', 4)))
-    notes.append(('E4', 329.6))
-    notes.append(('F4', get_note_frequency('F', 4)))
-    notes.append(('F#4', get_note_frequency('F#', 4)))
-    notes.append(('G4', 392.0))
-    notes.append(('G#4', get_note_frequency('G#', 4)))
-    notes.append(('A4', 440.0))  # Already added, but for completeness
-    
-    # Notes on E string
-    notes.append(('E5', 659.3))
-    notes.append(('F5', get_note_frequency('F', 5)))
-    notes.append(('F#5', get_note_frequency('F#', 5)))
-    notes.append(('G5', get_note_frequency('G', 5)))
-    notes.append(('G#5', get_note_frequency('G#', 5)))
-    notes.append(('A5', get_note_frequency('A', 5)))
+    # Add all notes
+    notes.extend(a_major_scale_notes)
     
     return notes
 
