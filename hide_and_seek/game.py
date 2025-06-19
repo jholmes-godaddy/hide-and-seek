@@ -36,15 +36,25 @@ class HideAndSeekGame:
         print("You found all the hidden notes!")
         print("🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵")
         
-        # Play a little celebration melody
-        celebration_notes = [440.0, 493.9, 523.3, 587.3, 659.3]  # A, B, C, D, E
-        for freq in celebration_notes:
-            self.audio_player.play_note(freq, duration=0.3, volume=0.2)
-            time.sleep(0.1)
+        # Play the celebration melody: A B C# D E E E E F# D A(high) F# E(long)
+        celebration_notes = [
+            (440.0, 0.1),    # A4
+            (493.9, 0.1),    # B4
+            (554.4, 0.1),    # C#5
+            (587.3, 0.1),    # D5
+            (659.3, 0.1),    # E5
+            (659.3, 0.1),    # E5
+            (659.3, 0.1),    # E5
+            (659.3, 0.1),    # E5
+            (740.0, 0.1),    # F#5
+            (587.3, 0.1),    # D5
+            (880.0, 0.1),    # A5 (high)
+            (740.0, 0.1),    # F#5
+            (659.3, 0.5),    # E5 (long)
+        ]
         
-        # Play the sequence backwards
-        for freq in reversed(celebration_notes):
-            self.audio_player.play_note(freq, duration=0.3, volume=0.2)
+        for freq, duration in celebration_notes:
+            self.audio_player.play_note(freq, duration=duration, volume=0.2)
             time.sleep(0.1)
     
     def play_note_sequence(self, notes: List[Tuple[str, float]]) -> None:
