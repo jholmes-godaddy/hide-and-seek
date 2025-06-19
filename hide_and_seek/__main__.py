@@ -22,8 +22,8 @@ Examples:
     parser.add_argument(
         '-n', '--num-notes',
         type=int,
-        default=3,
-        help='Number of notes to play (default: 3)'
+        default=8,
+        help='Number of notes to play (default: 8)'
     )
     
     parser.add_argument(
