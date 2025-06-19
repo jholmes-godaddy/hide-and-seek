@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "hide-and-seek"
+version = "0.1.0"
+description = "An ear training app for violin students"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "hide_and_seek"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyaudio = "^0.2.11"
+numpy = "^1.24.0"
+scipy = "^1.10.0"
+librosa = "^0.10.0"
+sounddevice = "^0.4.6"
+soundfile = "^0.12.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+black = "^23.0.0"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api" 
