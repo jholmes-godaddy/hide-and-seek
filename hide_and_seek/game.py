@@ -11,9 +11,10 @@ from .audio import AudioPlayer
 class HideAndSeekGame:
     """Main game class for the ear training app"""
     
-    def __init__(self, tolerance_cents: float = 50.0):
+    def __init__(self, tolerance_cents: float = 50.0, debug: bool = False):
         self.audio_player = AudioPlayer()
         self.tolerance_cents = tolerance_cents
+        self.debug = debug
         self.available_notes = get_violin_range_notes()
         self.score = 0
         self.total_attempts = 0
@@ -94,7 +95,7 @@ class HideAndSeekGame:
             
             # Listen for the response
             success, detected_freq = self.audio_player.listen_for_note(
-                frequency, duration=3.0, tolerance_cents=self.tolerance_cents
+                frequency, duration=3.0, tolerance_cents=self.tolerance_cents, debug=self.debug
             )
             
             self.total_attempts += 1

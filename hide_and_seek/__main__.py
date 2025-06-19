@@ -39,6 +39,12 @@ Examples:
         help='List all available notes and exit'
     )
     
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug mode'
+    )
+    
     args = parser.parse_args()
     
     # List available notes if requested
@@ -61,7 +67,7 @@ Examples:
     
     # Create and run the game
     try:
-        game = HideAndSeekGame(tolerance_cents=args.tolerance)
+        game = HideAndSeekGame(tolerance_cents=args.tolerance, debug=args.debug)
         game.run_game(num_notes=args.num_notes)
     except KeyboardInterrupt:
         print("\n\nGame interrupted. Thanks for playing! 🎵")
