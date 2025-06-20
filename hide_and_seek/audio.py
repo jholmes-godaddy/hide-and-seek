@@ -241,8 +241,8 @@ class AudioPlayer:
     
     def play_water_drop_sound(self) -> None:
         """Play a water drop rising and decaying sound for correct pitches"""
-        # Create a water drop sound with rising frequency that decays
-        duration = 0.8
+        # Create a water drop sound with rising frequency that decays quickly
+        duration = 0.4  # Reduced from 0.8 to 0.4 seconds
         sample_rate = self.sample_rate
         
         t = np.linspace(0, duration, int(sample_rate * duration), False)
@@ -257,15 +257,15 @@ class AudioPlayer:
         # Generate the rising tone
         rising_tone = np.sin(2 * np.pi * freq_sweep * t)
         
-        # Apply envelope: quick attack, slow decay
+        # Apply envelope: quick attack, very fast decay
         envelope = np.ones_like(t)
-        attack_samples = int(0.1 * sample_rate)  # 0.1 second attack
-        decay_samples = int(0.7 * sample_rate)   # 0.7 second decay
+        attack_samples = int(0.05 * sample_rate)  # 0.05 second attack (reduced)
+        decay_samples = int(0.35 * sample_rate)   # 0.35 second decay (reduced)
         
         # Quick attack
         envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-        # Slow decay
-        envelope[attack_samples:] = np.exp(-3 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))
+        # Very fast decay
+        envelope[attack_samples:] = np.exp(-8 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))  # Increased decay rate
         
         # Apply envelope and add some harmonics for richness
         water_drop = rising_tone * envelope
@@ -279,29 +279,29 @@ class AudioPlayer:
     
     def play_click_sound(self) -> None:
         """Play a click sound when recording starts"""
-        # Create a short click sound
-        duration = 0.1
+        # Create a short click sound using noise
+        duration = 0.05  # Very short click
         sample_rate = self.sample_rate
         
         t = np.linspace(0, duration, int(sample_rate * duration), False)
         
-        # Create a click with a quick attack and decay
-        click = np.sin(2 * np.pi * 1000 * t)  # 1kHz tone
+        # Create a click using white noise instead of a pitched tone
+        click = np.random.normal(0, 1, len(t))
         
         # Apply envelope: very quick attack and decay
         envelope = np.ones_like(t)
-        attack_samples = int(0.01 * sample_rate)  # 0.01 second attack
-        decay_samples = int(0.09 * sample_rate)   # 0.09 second decay
+        attack_samples = int(0.005 * sample_rate)  # 0.005 second attack
+        decay_samples = int(0.045 * sample_rate)   # 0.045 second decay
         
         # Quick attack
         envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
         # Quick decay
-        envelope[attack_samples:] = np.exp(-10 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))
+        envelope[attack_samples:] = np.exp(-15 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))
         
         # Apply envelope
         click = click * envelope
         
         # Normalize and play
-        click = click * 0.15  # Reduce volume
+        click = click * 0.1  # Reduce volume
         sd.play(click, sample_rate)
         sd.wait() 
