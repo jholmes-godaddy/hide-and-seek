@@ -184,9 +184,13 @@ class HideAndSeekGame:
             if success:
                 self.score += 1
                 if attempts == 1:
-                    print("✅ Perfect! You found the hidden note on the first try!")
+                    print("✅ Perfect! You found the hidden note!")
                 else:
                     print(f"✅ Great! You found the hidden note after {attempts} attempts!")
+                
+                # Play water drop sound for correct pitch
+                self.audio_player.play_water_drop_sound()
+                
                 return True
             else:
                 print("❌ Not quite right. Let me play it again...")

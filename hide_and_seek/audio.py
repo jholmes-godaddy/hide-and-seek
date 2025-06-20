@@ -48,6 +48,9 @@ class AudioPlayer:
         """
         print(f"Recording for {duration} seconds... Speak or play now!")
         
+        # Play click sound to indicate recording start
+        self.play_click_sound()
+        
         # Record audio
         audio = sd.rec(int(duration * self.sample_rate), 
                       samplerate=self.sample_rate, 
@@ -234,4 +237,71 @@ class AudioPlayer:
         else:
             print(f"Detected {detected_freq:.1f} Hz, but target was {target_frequency:.1f} Hz")
             
-        return is_close, detected_freq 
+        return is_close, detected_freq
+    
+    def play_water_drop_sound(self) -> None:
+        """Play a water drop rising and decaying sound for correct pitches"""
+        # Create a water drop sound with rising frequency that decays
+        duration = 0.8
+        sample_rate = self.sample_rate
+        
+        t = np.linspace(0, duration, int(sample_rate * duration), False)
+        
+        # Start at a low frequency and rise to a higher frequency
+        start_freq = 400  # Hz
+        end_freq = 1200   # Hz
+        
+        # Create a frequency sweep (rising)
+        freq_sweep = np.linspace(start_freq, end_freq, len(t))
+        
+        # Generate the rising tone
+        rising_tone = np.sin(2 * np.pi * freq_sweep * t)
+        
+        # Apply envelope: quick attack, slow decay
+        envelope = np.ones_like(t)
+        attack_samples = int(0.1 * sample_rate)  # 0.1 second attack
+        decay_samples = int(0.7 * sample_rate)   # 0.7 second decay
+        
+        # Quick attack
+        envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
+        # Slow decay
+        envelope[attack_samples:] = np.exp(-3 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))
+        
+        # Apply envelope and add some harmonics for richness
+        water_drop = rising_tone * envelope
+        water_drop += 0.3 * np.sin(2 * np.pi * freq_sweep * 2 * t) * envelope  # Second harmonic
+        water_drop += 0.1 * np.sin(2 * np.pi * freq_sweep * 3 * t) * envelope  # Third harmonic
+        
+        # Normalize and play
+        water_drop = water_drop * 0.2  # Reduce volume
+        sd.play(water_drop, sample_rate)
+        sd.wait()
+    
+    def play_click_sound(self) -> None:
+        """Play a click sound when recording starts"""
+        # Create a short click sound
+        duration = 0.1
+        sample_rate = self.sample_rate
+        
+        t = np.linspace(0, duration, int(sample_rate * duration), False)
+        
+        # Create a click with a quick attack and decay
+        click = np.sin(2 * np.pi * 1000 * t)  # 1kHz tone
+        
+        # Apply envelope: very quick attack and decay
+        envelope = np.ones_like(t)
+        attack_samples = int(0.01 * sample_rate)  # 0.01 second attack
+        decay_samples = int(0.09 * sample_rate)   # 0.09 second decay
+        
+        # Quick attack
+        envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
+        # Quick decay
+        envelope[attack_samples:] = np.exp(-10 * (t[attack_samples:] - t[attack_samples]) / (t[-1] - t[attack_samples]))
+        
+        # Apply envelope
+        click = click * envelope
+        
+        # Normalize and play
+        click = click * 0.15  # Reduce volume
+        sd.play(click, sample_rate)
+        sd.wait() 
