@@ -23,7 +23,14 @@ Examples:
         '-n', '--num-notes',
         type=int,
         default=8,
-        help='Number of notes to play (default: 8)'
+        help='Number of notes to play in sequence (default: 8)'
+    )
+    
+    parser.add_argument(
+        '-d', '--distinct-notes',
+        type=int,
+        default=3,
+        help='Number of distinct notes to choose from (default: 3)'
     )
     
     parser.add_argument(
@@ -57,8 +64,16 @@ Examples:
         return
     
     # Validate arguments
-    if args.num_notes < 2:
-        print("Error: Number of notes must be at least 2")
+    if args.num_notes < 1:
+        print("Error: Number of notes in sequence must be at least 1")
+        sys.exit(1)
+    
+    if args.distinct_notes < 1:
+        print("Error: Number of distinct notes must be at least 1")
+        sys.exit(1)
+    
+    if args.distinct_notes > 8:
+        print("Error: Number of distinct notes cannot exceed 8 (available A major scale notes)")
         sys.exit(1)
     
     if args.tolerance <= 0:
@@ -68,7 +83,7 @@ Examples:
     # Create and run the game
     try:
         game = HideAndSeekGame(tolerance_cents=args.tolerance, debug=args.debug)
-        game.run_game(num_notes=args.num_notes)
+        game.run_game(num_distinct_notes=args.distinct_notes, sequence_length=args.num_notes)
     except KeyboardInterrupt:
         print("\n\nGame interrupted. Thanks for playing! 🎵")
     except Exception as e:
