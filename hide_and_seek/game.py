@@ -146,11 +146,20 @@ class HideAndSeekGame:
         Args:
             notes: List of (note_name, frequency) tuples
         """
-        print("\n🎵 Let's play Hide and Seek with these notes:")
+        print("\n🎵 Let's learn these notes:")
         for i, (note_name, freq) in enumerate(notes, 1):
             print(f"  {i}. {note_name} ({freq:.1f} Hz)")
             self.audio_player.play_note(freq, duration=1.0, volume=0.2)
             time.sleep(0.5)
+        
+        print("\nNow I'll play them one at a time. Get ready!")
+        input("Press Enter when you're ready to hear the notes...")
+        
+        for i, (note_name, freq) in enumerate(notes, 1):
+            print(f"\nPlaying note {i}: {note_name}")
+            self.audio_player.play_note(freq, duration=2.0, volume=0.3)
+            if i < len(notes):  # Don't wait after the last note
+                input("Press Enter for the next note...")
         
         print("\nNow I'll hide one note at a time. Listen carefully and try to match it!")
         time.sleep(2)
