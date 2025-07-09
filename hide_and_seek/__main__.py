@@ -13,9 +13,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python -m hide_and_seek              # Play with 3 notes (default)
-  python -m hide_and_seek -n 5         # Play with 5 notes
-  python -m hide_and_seek --tolerance 30  # Use stricter tolerance (30 cents)
+  python -m hide_and_seek                    # 3 distinct notes, 8 total notes
+  python -m hide_and_seek -d 4              # 4 distinct notes, 8 total notes
+  python -m hide_and_seek -n 10             # 3 distinct notes, 10 total notes
+  python -m hide_and_seek -d 4 -n 10        # 4 distinct notes, 10 total notes
+  python -m hide_and_seek --tolerance 30    # Use stricter tolerance (30 cents)
         """
     )
     
@@ -29,15 +31,15 @@ Examples:
     parser.add_argument(
         '-d', '--distinct-notes',
         type=int,
-        default=3,
-        help='Number of distinct notes to choose from (default: 3)'
+        default=4,
+        help='Number of distinct notes to choose from (default: 4)'
     )
     
     parser.add_argument(
         '-t', '--tolerance',
         type=float,
-        default=50.0,
-        help='Tolerance in cents for note matching (default: 50.0)'
+        default=40.0,
+        help='Tolerance in cents for note matching (default: 40.0)'
     )
     
     parser.add_argument(
