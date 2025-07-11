@@ -65,7 +65,7 @@ class HideAndSeekGame:
     
     def play_celebration(self) -> None:
         """Play a celebration sound when the game is completed"""
-        print("\n🎉🎉🎉 CONGRATULATIONS! 🎉🎉🎉")
+        print("\n🎉🎉🎉 GREAT WORK! 🎉🎉🎉")
         print("You found all the hidden notes!")
         print("🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵🎵")
         
@@ -90,7 +90,7 @@ class HideAndSeekGame:
             self.audio_player.play_note(freq, duration=duration, volume=0.2)
             time.sleep(0.1)
         
-        print("\n🎵 You've mastered the A major scale! 🎵")
+        print("\n🎵 You've been working hard on the A major scale! 🎵")
         time.sleep(1)
         
         # Play cheering/applause sound
@@ -180,7 +180,7 @@ class HideAndSeekGame:
         
         while True:
             attempts += 1
-            print(f"\n🎵 Playing: {note_name} (attempt {attempts})")
+            print(f"\n🎵 Playing note (attempt {attempts})")
             self.audio_player.play_note(frequency, duration=2.0, volume=0.3)
             
             # Listen for the response
@@ -244,7 +244,7 @@ class HideAndSeekGame:
         if successful_notes == sequence_length:
             self.play_celebration()
         else:
-            print(f"\nGood job! You found {successful_notes} out of {sequence_length} notes.")
-            print("Keep practicing and you'll get better!")
+            print(f"\nGood work! You found {successful_notes} out of {sequence_length} notes.")
+            print("Keep training your ear!")
         
-        print("\nThanks for playing Hide and Seek! 🎵") 
+        print("\nThanks for practicing! 🎵") 

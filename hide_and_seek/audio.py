@@ -5,6 +5,8 @@ Audio playback and recording utilities
 import numpy as np
 import sounddevice as sd
 import soundfile as sf
+import threading
+import time
 from typing import Optional, Tuple
 from scipy import signal
 from .notes import is_note_close
@@ -14,6 +16,8 @@ class AudioPlayer:
     
     def __init__(self, sample_rate: int = 44100):
         self.sample_rate = sample_rate
+        self._current_stream = None
+        self._is_playing = False
         
     def play_note(self, frequency: float, duration: float = 2.0, volume: float = 0.3) -> None:
         """
@@ -36,6 +40,72 @@ class AudioPlayer:
         sd.play(audio, self.sample_rate)
         sd.wait()  # Wait until audio is finished playing
         
+    def play_note_non_blocking(self, frequency: float, duration: float = 2.0, volume: float = 0.3) -> None:
+        """
+        Play a note without blocking. Can be stopped with stop_current_note().
+        
+        Args:
+            frequency: Frequency in Hz
+            duration: Duration in seconds
+            volume: Volume level (0.0 to 1.0)
+        """
+        from .notes import generate_sine_wave
+        
+        # Stop any currently playing note
+        self.stop_current_note()
+        
+        # Generate the sine wave
+        audio = generate_sine_wave(frequency, duration, self.sample_rate)
+        
+        # Apply volume
+        audio = audio * volume
+        
+        # Play the audio without waiting
+        self._current_stream = sd.play(audio, self.sample_rate)
+        self._is_playing = True
+        
+    def stop_current_note(self) -> None:
+        """Stop the currently playing note if any"""
+        if self._is_playing and self._current_stream is not None:
+            sd.stop()
+            self._is_playing = False
+            self._current_stream = None
+            
+    def is_note_playing(self) -> bool:
+        """Check if a note is currently playing"""
+        return self._is_playing
+        
+    def check_for_keypress(self) -> Optional[str]:
+        """
+        Check for a keypress without blocking. Returns the key if pressed, None otherwise.
+        This is a non-blocking version of _get_key_press.
+        """
+        import sys
+        import tty
+        import termios
+        import select
+        
+        # Check if there's input available
+        if select.select([sys.stdin], [], [], 0)[0]:
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(sys.stdin.fileno())
+                ch = sys.stdin.read(1)
+                # Handle arrow keys (they send 3 characters)
+                if ch == '\x1b':
+                    ch2 = sys.stdin.read(1)
+                    if ch2 == '[':
+                        ch3 = sys.stdin.read(1)
+                        if ch3 == 'A':
+                            return 'up'
+                        elif ch3 == 'B':
+                            return 'down'
+                return ch
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return None
+
     def record_audio(self, duration: float = 3.0) -> np.ndarray:
         """
         Record audio for the specified duration.
