@@ -64,18 +64,19 @@ class ScaleDetector:
         
         for i, (note_name, correct_freq) in enumerate(scale_notes):
             if i == out_of_tune_index:
-                # Play out-of-tune note
+                # Play out-of-tune note (normal speed)
                 print(f"  {note_name} (out of tune)")
                 self.audio_player.play_note(out_of_tune_freq, duration=1.0, volume=0.3)
                 time.sleep(0.2)
-                # Immediately play correct note
+                # Immediately play correct note (normal speed)
                 print(f"  {note_name} (correct)")
                 self.audio_player.play_note(correct_freq, duration=1.0, volume=0.3)
                 time.sleep(0.2)
             else:
+                # Play regular notes twice as fast
                 print(f"  {note_name}")
-                self.audio_player.play_note(correct_freq, duration=1.0, volume=0.3)
-                time.sleep(0.2)
+                self.audio_player.play_note(correct_freq, duration=0.5, volume=0.3)
+                time.sleep(0.1)
     
     def _play_fast_scale(self, scale_notes: List[Tuple[str, float]]) -> None:
         """Play the scale quickly as a victory celebration"""
@@ -93,22 +94,19 @@ class ScaleDetector:
         
         for i, (note_name, correct_freq) in enumerate(scale_notes):
             if i == out_of_tune_index:
-                # Play the out-of-tune note that was actually played
+                # Play the out-of-tune note that was actually played (normal speed)
                 print(f"  {note_name} (out of tune)")
                 self.audio_player.play_note(out_of_tune_freq, duration=0.5, volume=0.3)
                 time.sleep(0.1)
-                # Immediately play the corrected note
+                # Immediately play the corrected note (normal speed)
                 print(f"  {note_name} (correct)")
                 self.audio_player.play_note(correct_freq, duration=0.5, volume=0.3)
                 time.sleep(0.1)
             else:
+                # Play regular notes twice as fast
                 print(f"  {note_name}")
-                self.audio_player.play_note(correct_freq, duration=0.5, volume=0.3)
-                time.sleep(0.1)
-        
-        print("\nAnd here's the correction:")
-        print(f"  {scale_notes[out_of_tune_index][0]} (correct)")
-        self.audio_player.play_note(scale_notes[out_of_tune_index][1], duration=1.0, volume=0.3)
+                self.audio_player.play_note(correct_freq, duration=0.25, volume=0.3)
+                time.sleep(0.05)
     
     def run_game(self) -> None:
         """Run the scale detection game"""
